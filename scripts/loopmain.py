@@ -9,26 +9,37 @@ import schedule
 import functools
 import logging
 
+
 # configuração do logger
-logging.basicConfig(filename=r'C:\Users\marcos.silvaext\Documents\final_report_client\logs.log', level=logging.INFO,
+logging.basicConfig(filename=r'/home/administrator/WindowsShare/01 - FATURAMENTO/01 - CLIENTES - CONTROLE - 2024 TOTVS/04 - EXTRATORES PROCESSADOS/logs.log',                    
                     format='%(asctime)s:%(levelname)s:%(message)s')
 
 
 ascii_banner = art.text2art("Relatorio Final")
 colored_banner = cprint(ascii_banner, 'green')
 
-#ENTRDA DOS ARQUIVOS
-extractor_file_path = r"H:\01 - FATURAMENTO\01 - CLIENTES - CONTROLE - 2024 TOTVS\01-EXTRATOR_PEDIDOS_DE_CLIENTES" # EXTRATOR
-# SAÍDA DOS ARQUIVOS
-batch_totvs_path = r'H:\01 - FATURAMENTO\01 - CLIENTES - CONTROLE - 2024 TOTVS\02-SAÍDA_EXTRATOR' # CRIARÁ AS PASTA AQUI
-#verificar se o pedido já foi faturado no banco de dados PostgresQL
-invoiced_orders = r'C:\DataWare\data\consolidated_files\consolidated_validated\PEDIDOS_FATURADOS' # PEDIDOS FATURADOS NO BANCO DE DADOS
-news_orders = r'\\10.10.4.7\Dados\Financeiro\01 - FATURAMENTO\01 - CLIENTES - CONTROLE - 2024 TOTVS\03 - DATA_RAW' # NOVOS PEDIDOS IDENTIFICADOS NO EXTRATOR
-output_merge_path = r'C:\DataWare\data\consolidated_files\consolidated_validated\MERGE_RELATÓRIO_FINAL' # RELATÓRIO FINAL 
-source_directory = r'\\10.10.4.7\Dados\Financeiro\01 - FATURAMENTO\01 - CLIENTES - CONTROLE - 2024 TOTVS\03 - DATA_RAW' # DIRETÓRIO DE ORIGEM DOS PEDIDOS
-target_directory = r'H:\01 - FATURAMENTO\01 - CLIENTES - CONTROLE - 2024 TOTVS' # DIRETÓRIO DE DESTINO DOS PEDIDOS
-# move os arquivos para a pasta de arquivos processados a cada determinado tempo
-processed_extrator_path = r"\\10.10.4.7\Dados\Financeiro\01 - FATURAMENTO\01 - CLIENTES - CONTROLE - 2024 TOTVS\04 - EXTRATORES PROCESSADOS"
+
+# DIRETORIO DE ENTRADA EXTRATOR TOTVS
+extractor_file_path = r"/home/administrator/WindowsShare/01 - FATURAMENTO/01 - CLIENTES - CONTROLE - 2024 TOTVS/01-EXTRATOR_PEDIDOS_DE_CLIENTES"
+
+# DIRETORIO DE SAIDA DOS ARQUIVOS
+batch_totvs_path = r'/home/administrator/WindowsShare/01 - FATURAMENTO/01 - CLIENTES - CONTROLE - 2024 TOTVS/02-SAÍDA_EXTRATOR'
+target_directory = r'/home/administrator/WindowsShare/01 - FATURAMENTO/01 - CLIENTES - CONTROLE - 2024 TOTVS'
+
+# DIRETORIO DE JA PEDIDOS FATURADOS
+invoiced_orders = r'/home/administrator/WindowsShare/01 - FATURAMENTO/01 - CLIENTES - CONTROLE - 2024 TOTVS/PEDIDOS_FATURADOS'
+
+# DIRETORIO DE NOVOS PEDIDOS IDENTIFICADOS NO EXTRATOR
+news_orders = r'/home/administrator/WindowsShare/01 - FATURAMENTO/01 - CLIENTES - CONTROLE - 2024 TOTVS/03 - DATA_RAW'
+source_directory = r'/home/administrator/WindowsShare/01 - FATURAMENTO/01 - CLIENTES - CONTROLE - 2024 TOTVS/03 - DATA_RAW'
+news_orders = r'/home/administrator/WindowsShare/01 - FATURAMENTO/01 - CLIENTES - CONTROLE - 2024 TOTVS/03 - DATA_RAW'
+
+# DIRETORIO DE EXTRATORES JÁ FINALIZADOS
+processed_extrator_path = r"/home/administrator/WindowsShare/01 - FATURAMENTO/01 - CLIENTES - CONTROLE - 2024 TOTVS/04 - EXTRATORES PROCESSADOS"
+
+# DIRETORIO DE RELATORIOS MESCLADOS(funcao inativada)
+output_merge_path = r"/home/administrator/WindowsShare/01 - FATURAMENTO/01 - CLIENTES - CONTROLE - 2024 TOTVS/MERGE_RELATORIO_FINAL"
+
 
 
 file_processor = FileProcessor(extractor_file_path, invoiced_orders, news_orders, output_merge_path)
@@ -42,7 +53,7 @@ final_report = FinalReport(host_postgres)
 if __name__ == "__main__":
     while True:
         #sql.create_database()
-        file_processor.delete_xml(files_path=extractor_file_path)
+        #file_processor.delete_xml(files_path=extractor_file_path)
         sleep(0.5)
         print(Fore.LIGHTYELLOW_EX + 'CHECANDO NOVOS PEDIDOS ...' + Fore.RESET)
         final_report.check_and_update_orders(extractor_file_path, 'pedido_faturamento')
@@ -53,8 +64,8 @@ if __name__ == "__main__":
         sleep(0.5)
         
         file_processor.move_files_to_month_subfolder(
-            directory_origin=r'\\10.10.4.7\Dados\Financeiro\01 - FATURAMENTO\01 - CLIENTES - CONTROLE - 2024 TOTVS\03 - DATA_RAW',
-            target_directory=r'H:\01 - FATURAMENTO\01 - CLIENTES - CONTROLE - 2024 TOTVS')
+            directory_origin=news_orders,
+            target_directory=target_directory)
         
         print(Fore.GREEN + 'MOVENDO ARQUIVOS PARA DIRETÓRIO DE SAÍDA' + Fore.RESET)
         sleep(0.5)
@@ -64,11 +75,11 @@ if __name__ == "__main__":
         logging.info('ÚLTIMA EXECUÇÃO : ' + str(datetime.now()))        
 
         # Agendar a execução para mover arquivos para pasta de processados a cada 1 hora
-        schedule_function = functools.partial(file_processor.move_file_to_client_folder, 
-                                      source_directory=extractor_file_path,
+        schedule_function = functools.partial(file_processor.move_files_to_month_subfolder, 
+                                      directory_origin=extractor_file_path,
                                       target_directory=processed_extrator_path)
 
-        schedule.every(1).hours.do(schedule_function)
+        schedule.every(59).minutes.do(schedule_function)
                                               
         schedule.run_pending()
         sleep(0.5)

@@ -1,0 +1,12 @@
+[2024-01-29 15:11:02 -0300] [2653021] [INFO] Starting gunicorn 21.2.0
+[2024-01-29 15:11:02 -0300] [2653021] [ERROR] Connection in use: ('::', 8793)
+[2024-01-29 15:11:02 -0300] [2653021] [ERROR] Retrying in 1 second.
+[2024-01-29 15:11:03 -0300] [2653021] [ERROR] Connection in use: ('::', 8793)
+[2024-01-29 15:11:03 -0300] [2653021] [ERROR] Retrying in 1 second.
+[2024-01-29 15:11:04 -0300] [2653021] [ERROR] Connection in use: ('::', 8793)
+[2024-01-29 15:11:04 -0300] [2653021] [ERROR] Retrying in 1 second.
+[2024-01-29 15:11:05 -0300] [2653021] [ERROR] Connection in use: ('::', 8793)
+[2024-01-29 15:11:05 -0300] [2653021] [ERROR] Retrying in 1 second.
+[2024-01-29 15:11:06 -0300] [2653021] [ERROR] Connection in use: ('::', 8793)
+[2024-01-29 15:11:06 -0300] [2653021] [ERROR] Retrying in 1 second.
+[2024-01-29 15:11:07 -0300] [2653021] [ERROR] Can't connect to ('::', 8793)

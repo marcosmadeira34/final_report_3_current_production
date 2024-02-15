@@ -17,13 +17,14 @@ import locale
 from openpyxl.styles import Font, PatternFill, Border, Side, Alignment
 #import pyspark.pandas as pd
 from fuzzywuzzy import process
-
+from streamlit import file_uploader
 
 
 
 # configuração do logger
-logging.basicConfig(filename=r'C:\Users\marcos.silvaext\Documents\final_report_client\logs.log', level=logging.INFO,
+logging.basicConfig(filename=r'/home/administrator/WindowsShare/01 - FATURAMENTO/01 - CLIENTES - CONTROLE - 2024 TOTVS/04 - EXTRATORES PROCESSADOS/logs.log', level=logging.INFO,
                     format='%(asctime)s:%(levelname)s:%(message)s')
+
 
 
 class FinalReport:
@@ -236,7 +237,7 @@ class FinalReport:
                         # Verifica se há novos pedidos antes de continuar
                         if not new_orders_df.empty:
                             # caminho do diretório NOVOS_PEDIDOS
-                            path = r'\\10.10.4.7\Dados\Financeiro\01 - FATURAMENTO\01 - CLIENTES - CONTROLE - 2024 TOTVS\03 - DATA_RAW'
+                            path = r'/home/administrator/WindowsShare/01 - FATURAMENTO/01 - CLIENTES - CONTROLE - 2024 TOTVS/03 - DATA_RAW'
                             # cria o diretório NOVOS_PEDIDOS se não existir
                             os.makedirs(path, exist_ok=True)
                             # percorre o DataFrame agrupando os pedidos por cliente
@@ -357,57 +358,76 @@ class FinalReport:
             'loja_cliente': 'LOJA CLIENTE',
             'nome_do_cliente': 'NOME DO CLIENTE',
             'cnpj_do_cliente': 'CNPJ DO CLIENTE',
-            'cnpj_de_faturamento': 'CNPJ DE FATURAMENTO',
-            'cnpj_de_remessa': 'CNPJ DE REMESSA',
-            'equipamento': 'EQUIPAMENTO',
-            'nota_de_remessa': 'NOTA DE REMESSA',
-            'data_de_remessa': 'DATA DE REMESSA',
-            'serie_da_nf_remessa': 'SERIE DA NF REMESSA',
-            'produto': 'PRODUTO',
-            'descricao_do_produto': 'DESCRIÇÃO DO PRODUTO',
-            'quantidade': 'QUANTIDADE',
-            'pedido_de_remessa': 'PEDIDO DE REMESSA',
+            'email': 'E-MAIL',
+            'contrato_legado': 'CONTRATO LEGADO',
             'projeto': 'PROJETO',
             'obra': 'OBRA',
-            'prazo_do_contrato': 'PRAZO DO CONTRATO',
-            'data_de_ativacao_legado': 'DATA DE ATIVAÇÃO LEGADO',
-            'data_de_ativacao': 'DATA DE ATIVAÇÃO',
-            'ultimo_faturamento': 'ÚLTIMO FATURAMENTO',
-            #'periodo_final': 'PERIODO FINAL',
-            'data_do_termo': 'DATA DO TERMO',
-            'aniversario': 'DATA BASE REAJUSTE',
-            'desc_ajuste': 'ÍNDICE',
-            'indice_aplicado': 'ÍNDICE APLICADO',
-            'dias_de_locacao': 'DIAS DE LOCAÇÃO',
-            'valor_de_origem': 'VALOR DE ORIGEM',
-            'valor_unitario': 'VALOR UNITÁRIO',
-            'valor_bruto': 'VALOR BRUTO',
-            'tipo_do_mes': 'TIPO DO MES',
-            #'nr_chamado': 'NR CHAMADO',
-            'contrato_legado': 'CONTRATO LEGADO',
-            'acrescimo': 'ACRÉSCIMO',
-            'franquia': 'FRANQUIA',
+            'nome_da_obra': 'NOME DA OBRA',
+            'numero_da_as': 'NUMERO DA AS',
+            'pedido_de_remessa': 'PEDIDO DE REMESSA',
+            'nota_de_remessa': 'NOTA DE REMESSA',
+            'serie_da_nf_remessa': 'SERIE DA NF REMESSA',
+            'data_de_remessa': 'DATA DE REMESSA',
+            'cnpj_de_remessa': 'CNPJ DE REMESSA',
             'id_equipamento': 'ID EQUIPAMENTO',
             'id_equip_substituido': 'ID EQUIP SUBSTITUIDO',
             'data_da_substituicao': 'DATA DA SUBSTITUICAO',
-            'data_proximo_faturamento': 'DATA PRÓXIMO FATURAMENTO',
-            #'data_inicio': 'DATA INICIO',
-            'data_fim_locacao': 'DATA FIM LOCACAO',
+            'equipamento': 'EQUIPAMENTO',
             'tipo_de_servico': 'TIPO DE SERVICO',
-            'email': 'E-MAIL',
+            'tipo_de_operacao': 'TIPO DE OPERACAO',
+            'produto': 'PRODUTO',
+            'descricao_do_produto': 'DESCRIÇÃO DO PRODUTO',
+            'quantidade': 'QUANTIDADE',
+            'valor_de_origem': 'VALOR DE ORIGEM',
+            'valor_unitario': 'VALOR UNITÁRIO',
+            'valor_bruto': 'VALOR BRUTO',
+            'desconto': 'DESCONTO',
+            'acrescimo': 'ACRÉSCIMO',
+            'data_de_ativacao_legado': 'DATA DE ATIVAÇÃO LEGADO',
+            'data_de_ativacao': 'DATA DE ATIVAÇÃO',
+            'ultimo_faturamento': 'ÚLTIMO FATURAMENTO',
+            'data_proximo_faturamento': 'DATA PRÓXIMO FATURAMENTO',
+            'data_fim_locacao': 'DATA FIM LOCACAO',
+            'dias_de_locacao': 'DIAS DE LOCAÇÃO',
+            'prazo_do_contrato': 'PRAZO DO CONTRATO',
+            'previsao_retirada': 'PREVISÃO RETIRADA',
+            'solicitacao_retirada': 'SOLICITAÇÃO RETIRADA',
+            'tipo_do_mes': 'TIPO DO MÊS',
+            'mes_fixo': 'MÊS FIXO',
+            'data_base_reajuste': 'DATA BASE REAJUSTE',
+            'indexador': 'INDEXADOR',
+            'data_do_reajuste': 'DATA DO REAJUSTE',
+            'indice_aplicado': 'ÍNDICE APLICADO',
             'calculo_reajuste': 'CÁLCULO REAJUSTE',
-            'nome_da_obra': 'NOME DA OBRA',
-            'numero_da_as': 'NUMERO DA AS',
+            'franquia': 'FRANQUIA',
+            'class_faturaento': 'CLASS FATURAMENTO',
+            'cobra': 'COBRA ?',
+            'data_entrada': 'DATA ENTRADA',
+            'centro_de_custos': 'CENTRO DE CUSTOS',
             'pedido_faturamento': 'PEDIDO FATURAMENTO',
+            'emissao_pedido': 'EMISSÃO PEDIDO',
+            'qtde_pedido': 'QTDE PEDIDO',   
+            'vlr_unitario_pedido': 'VLR UNITÁRIO PEDIDO',
+            'vlr_total_pedido': 'VLR TOTAL PEDIDO',
+            'percent_desconto': 'PERCENT DESCONTO',
+            'vlr_desconto': 'VLR DESCONTO',
+            'tes': 'TES',
+            'natureza': 'NATUREZA',
             'nf_de_faturamento': 'NF DE FATURAMENTO',
             'serie_de_faturamento': 'SERIE DE FATURAMENTO',
             'data_de_faturamento': 'DATA DE FATURAMENTO',
+            'cliente_faturamento': 'CLIENTE FATURAMENTO',
+            'loja_faturameto' : 'LOJA FATURAMENTO',
+            'nome_cli_faturamento': 'NOME CLI FATURAMENTO',
+            'cnpj_de_faturamento': 'CNPJ DE FATURAMENTO',
             'qtde_faturamento': 'QTDE FATURAMENTO',
             'vlr_unitario_faturamento': 'VLR UNITÁRIO FATURAMENTO',
             'vlr_total_faturamento': 'VLR TOTAL FATURAMENTO',
             'periodo_de_faturamento': 'PERÍODO DE FATURAMENTO',
-            'status_de_cobranca': 'STATUS DE COBRANÇA',
-            }
+            'origem_do_dado': 'ORIGEM DO DADO',
+            'serie_do_equipamento': 'SERIE DO EQUIPAMENTO',
+
+        }
         
         try:
             # percorre o diretório e localiza os arquivos excel 
@@ -422,11 +442,16 @@ class FinalReport:
                     df = df.rename(columns=new_names)
 
                     # dropas as colunas que não serão usadas
-                    columns_to_drop = ['CNPJ DE REMESSA', 'NOTA DE REMESSA', 'DATA DE REMESSA', 'SÉRIE DA NF REMESSA', 'PRODUTO',
-                                    'PEDIDO DE REMESSA', 'PRAZO DO CONTRATO', 'ÚLTIMO FATURAMENTO', 'DATA DO TERMO', 'TIPO DO MÊS',
-                                    'FRANQUIA', 'ID EQUIP SUBSTITUIDO', 'DATA DA SUBSTITUIÇÃO', 'DATA PRÓXIMO FATURAMENTO',
-                                    'DATA FIM LOCAÇÃO', 'TIPO DE SERVIÇO', 'E-MAIL', 'NOME DA OBRA', 'NUMERO DA AS', 'PEDIDO FATURAMENTO',
-                                    'NF DE FATURAMENTO', 'SÉRIE DE FATURAMENTO', 'DATA DE FATURAMENTO', 'QTDE FATURAMENTO', 'STATUS DE COBRANÇA']
+                    columns_to_drop = ['E-MAIL', 'NOME DA OBRA', 'NUMERO DA AS', 'PEDIDO DE REMESSA', 'NOTA DE REMESSA', 'SERIE DA NF REMESSA',
+                                       'DATA DE REMESSA', 'CNPJ DE REMESSA', 'ID EQUIP SUBSTITUIDO', 'DATA DA SUBSTITUICAO', 'TIPO DE SERVICO',
+                                       'TIPO DE OPERACAO', 'PRODUTO', 'DESCONTO', 'ÚLTIMO FATURAMENTO', 'DATA PRÓXIMO FATURAMENTO', 'DATA FIM LOCACAO',
+                                       'PRAZO DO CONTRATO', 'PREVISÃO RETIRADA', 'SOLICITAÇÃO RETIRADA', 'TIPO DO MÊS', 'MÊS FIXO',
+                                       'DATA DO REAJUSTE', 'FRANQUIA', 'CLASS FATURAMENTO', 'COBRA ?', 'DATA ENTRADA', 'CENTRO DE CUSTOS', 
+                                       'PEDIDO FATURAMENTO', 'EMISSÃO PEDIDO', 'QTDE PEDIDO', 'VLR UNITÁRIO PEDIDO', 'PERCENT DESCONTO', 
+                                       'VLR DESCONTO', 'TES', 'NATUREZA', 'NF DE FATURAMENTO', 'SERIE DE FATURAMENTO', 'DATA DE FATURAMENTO', 
+                                       'CLIENTE FATURAMENTO', 'LOJA FATURAMENTO', 'NOME CLI FATURAMENTO', 'QTDE FATURAMENTO', 
+                                       'ORIGEM DO DADO', 'SERIE DO EQUIPAMENTO']
+                    
 
                     df = df.drop(columns_to_drop, axis=1, errors='ignore')
 
@@ -434,7 +459,7 @@ class FinalReport:
                     df = df[['CÓDIGO CLIENTE', 'NOME DO CLIENTE', 'LOJA CLIENTE', 'CNPJ DO CLIENTE', 'CNPJ DE FATURAMENTO',
                             'PROJETO', 'OBRA', 'ID EQUIPAMENTO', 'EQUIPAMENTO', 'DESCRIÇÃO DO PRODUTO', 'DATA DE ATIVAÇÃO LEGADO', 'DATA DE ATIVAÇÃO',
                             'PERÍODO DE FATURAMENTO', 'DIAS DE LOCAÇÃO', 'VALOR UNITÁRIO', 'VALOR BRUTO',
-                            'VLR UNITÁRIO FATURAMENTO', 'QUANTIDADE', 'VLR TOTAL FATURAMENTO', 'DATA BASE REAJUSTE', 'ÍNDICE', 'VALOR DE ORIGEM',
+                            'VLR UNITÁRIO FATURAMENTO', 'QUANTIDADE', 'VLR TOTAL FATURAMENTO', 'DATA BASE REAJUSTE', 'VALOR DE ORIGEM','INDEXADOR',
                             'CÁLCULO REAJUSTE', 'ÍNDICE APLICADO', 'ACRÉSCIMO', 'CONTRATO LEGADO']]
                      
                     
@@ -967,3 +992,142 @@ class FileProcessor:
             print(f'Arquivo {file_to_move} movido para {current_file_path_with_month}')
                       
 
+
+
+
+
+class TesteStreamlit:
+    def __init__(self, host):
+        # Crie uma instância de ConnectPostgresQL usando o host do seu banco de dados PostgreSQL
+        self.db_connection = ConnectPostgresQL(host)
+        self.session = self.db_connection.Session()
+
+
+    def check_and_update_orders_streamlit(self, uploaded_file:file_uploader, col, progress_callback=None):
+        start = time.time()
+        """Método para verificar e atualizar pedidos ausentes no banco de dados"""
+
+        try:
+            # Carrega o arquivo fornecido pelo usuário
+            extract_df = pd.read_excel(uploaded_file, sheet_name='2-Resultado', engine='openpyxl', header=1)
+
+            # verifica se a coluna "Nome do Cliente" esta presente no indice 1(2ª linha)
+            if 'Pedido Faturamento' in extract_df.iloc[1].values:
+                extract_df.columns = extract_df.iloc[1]
+
+            # Padroniza o nome da coluna para minúsculas e substitui espaços por underscore
+            extract_df.columns = extract_df.columns.str.lower().str.replace(' ', '_').str.replace('.', '') \
+                .str.replace('-', '') \
+                .str.replace('ç', 'c') \
+                .str.replace('cálculo_reajuste', 'calculo_reajuste')  # Remove o acento "´"
+
+            # Verifica se a coluna existe no arquivo
+            col_lower = col.lower().replace(' ', '_')
+            if col_lower not in extract_df.columns:
+                print(f'Coluna {col} não encontrada no arquivo')
+                return
+
+            # Converte a coluna PEDIDO para numérico
+            extract_df[col_lower] = pd.to_numeric(extract_df[col_lower], errors='coerce')
+            print(f'Total de registros no extrator: {len(extract_df)}')
+
+            # Filtra o DataFrame para incluir apenas os pedidos mais recentes
+            extract_df = extract_df[extract_df[col_lower] >= 0]
+
+            # Carrega os pedidos já existentes no banco de dados, convertendo a coluna para inteiro
+            existing_orders = set(int(order) for order in pd.read_sql_query(
+                f'SELECT DISTINCT {col} FROM {OrdersTable.__tablename__}', self.db_connection.engine)[col])
+
+            # Identifica os pedidos ausentes
+            new_orders = set(extract_df[col_lower]) - existing_orders
+            print(f'Total de novos pedidos no extrator: {len(new_orders)}')
+
+            if len(new_orders) > 0:
+                # Reinicializa a variável new_orders_df
+                new_orders_df = pd.DataFrame()
+
+                # Cria um DataFrame apenas com os pedidos ausentes
+                new_orders_df = extract_df[extract_df[col_lower].isin(new_orders)].copy()
+
+                # Verifica se há novos pedidos antes de continuar
+                if not new_orders_df.empty:
+                    # caminho do diretório NOVOS_PEDIDOS
+                    path = r'C:\DataWare\data\consolidated_files\consolidated_validated\NOVOS_PEDIDOS'
+                    # cria o diretório NOVOS_PEDIDOS se não existir
+                    os.makedirs(path, exist_ok=True)
+                    # percorre o DataFrame agrupando os pedidos por cliente
+                    for order_number, order_group in new_orders_df.groupby(col_lower):
+                        # remove caracteres inválidos do nome do cliente e cria o nome do arquivo
+                        client_name_valid = order_group['nome_do_cliente'].iloc[0].translate(
+                            str.maketrans('', '', r'\/:*?"<>|'))
+                        # define o nome e cria o arquivo
+                        file_name = f'{order_number}_{client_name_valid}.xlsx'
+                        # caminho completo do arquivo para salvar
+                        file_path = os.path.join(path, file_name)
+                        # salva o arquivo em excel
+                        order_group.to_excel(file_path, sheet_name='CONSOLIDADO', index=False, engine='openpyxl')
+                        print(f'Novo arquivo {file_name} criado.')
+
+                        # Atualize o progresso
+                        if progress_callback is not None:
+                            progress_callback((len(new_orders_df) / len(new_orders)) * 100)
+
+                    # Atualiza o banco de dados com os pedidos ausentes
+                    print('Atualizando banco de dados....!')
+                    try:
+                        new_orders_df = new_orders_df.rename(columns={'cálculo_reajuste': 'calculo_reajuste'})
+
+                        new_orders_df.to_sql(OrdersTable.__tablename__, self.db_connection.engine, if_exists='append', index=False, method='multi')
+                        print(Fore.GREEN + 'Banco de dados atualizado com novos pedidos' + Fore.RESET)
+                    except IntegrityError as e:
+                        print('Erro ao atualizar o banco de dados:', e)
+
+                    # pula o processamento dos clientes abaixo (grandes clientes)
+                    special_clients = ['teste']
+
+                    def save_order_excel(order, project):
+                        order_df = extract_df[extract_df[col_lower] == order]
+                        
+                        if not order_df.empty:
+                            client_name = order_df['CLIENTE'].iloc[0]
+                            
+                            if client_name in special_clients:
+                                print(f'Relatório {client_name} será gerado manualmente')
+                                return
+
+                            client_name_safe = re.sub(r'[^a-zA-Z0-9_]', '_', unidecode.unidecode(client_name))
+                            sheet_names = ['LAVORO', 'CONSOLIDADO']
+
+                            # itera sobre as sheets do arquivo
+                            for sheet in sheet_names:
+                                # Define o nome do arquivo no padrão desejado, incluindo o número do projeto
+                                file_name = f'{project}_{order}_{client_name_safe}.xlsx'
+                                # Caminho completo do arquivo para salvar
+                                file_path = os.path.join(path, file_name)
+                                # Salva o arquivo em excel
+                                order_df.to_excel(file_path, sheet_name=sheet, index=False, engine='openpyxl')
+                                print(f'Arquivo {file_name} criado.')
+
+                                # Atualize o progresso
+                                if progress_callback is not None:
+                                    progress_callback((len(new_orders_df) / len(new_orders)) * 100)
+                                    
+
+                    with ThreadPoolExecutor() as executor:
+                        executor.map(lambda order: save_order_excel(order, 'projeto'), new_orders)
+
+                    print(f'Pedidos salvos no diretório NOVOS_PEDIDOS')
+                    print('Verificação e atualização concluídas.\n')
+                    end = time.time()
+                    #print(f'Tempo de execução do código: {end - start}')
+
+                else:
+                    print('Nenhum pedido novo encontrado.\n')
+
+        except PermissionError as e:
+            print(f"Erro de permissão ao acessar o arquivo: {e}")
+            print('Corrija as permissões e tente novamente.')
+            return False
+        except Exception as e:
+            print(f"Erro ao processar arquivo: {e}")
+            return False
